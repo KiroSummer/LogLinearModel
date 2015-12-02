@@ -1,0 +1,46 @@
+loglinearmodel train and dev 100 sentences
+		train.conll	dev.conll	execute_time
+eta = 0.001
+B = 20		86.6%		67.2%		167s
+facotr = True
+
+eta = 0.001
+B = 20		86.6%		67.3%		121s
+factor = False
+
+eta = 0.001
+B = 20		100%		73.3%		157s
+factor = True
+g without eta
+
+================================================================
+eta = 0.001
+B = 100		86.9%		67.8%		50s
+factor = True	
+
+eta = 0.001
+B = 100		87.2%		67.7%		40s
+factor = false
+
+eta = 0.001
+B = 100		100%		73.6%		48%
+g without eta
+
+================================================================
+c = 0.01
+eta = 0.001	86.3%		67.0%		55s
+B = 100
+factor = True
+
+c = 0.01
+eta = 0.001	87.2%		67.7%		40s
+B = 100
+factor = False
+
+c = 0.01
+eta = 0.001	100%		73.6%		47s
+B = 100
+g without eta
+
+================================================================
+
