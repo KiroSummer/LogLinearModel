@@ -27,7 +27,7 @@ class dataset:
         sentenceCount = 0
         sen = sentence()
         for s in self.inputfile:
-            if(s == '\n'):
+            if(s == '\n' or s == '\r\n'):
                 sentenceCount += 1
                 self.sentences.append(sen)
                 sen = sentence()
@@ -63,12 +63,12 @@ class log_linear_model:
         self.train = dataset()
         self.dev = dataset()
 
-        self.train.open_file("train.conll")
-        self.train.read_data(100)
+        self.train.open_file("./bigdata/train.conll")
+        self.train.read_data(-1)
         self.train.close_file()
 
-        self.dev.open_file("dev.conll")
-        self.dev.read_data(100)
+        self.dev.open_file("./bigdata/dev.conll")
+        self.dev.read_data(-1)
         self.dev.close_file()
     
     def create_feature(self, sentence, pos):
@@ -193,6 +193,7 @@ class log_linear_model:
             currenttag_id = self.tags[tag]
             offset = self.feature_length * currenttag_id
             probability = 1.0 * (math.e ** self.dot(feature_id, offset)) / denominator    #每一个tag对应的概率
+            #print("update_times:\t"+str(update_times)+"\tprobability:\t"+str(probability))
             for i in feature_id:
                 index = offset + i
                 self.g[index] -= probability * 1.0
@@ -206,11 +207,12 @@ class log_linear_model:
 
     def update_weight(self, eta, update_times):
         #for i in range(self.feature_space_length):
-            #self.w[i] = (1 - eta) * self.w[i] + self.g[i]
+            #self.w[i] = (1 - eta) * self.w[i] + eta * self.g[i]
         for i in self.g_update_id:
-            #self.update_weight_with_update_times(i, update_times)
-            self.w[i] -= eta * self.w[i]
+            self.update_weight_with_update_times(i, update_times)
+            #self.w[i] = (1 - eta) * self.w[i]
             self.w[i] += eta * self.g[i]
+            #print("update_times:\t"+str(update_times)+"\tself.w[i]"+str(self.w[i]*1000))
 
     def iterator_end_update_weight(self, eta, update_times):
         for i in range(self.feature_space_length):
