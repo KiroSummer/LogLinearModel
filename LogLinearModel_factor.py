@@ -9,8 +9,8 @@ class sentence:
         self.tag = []
         self.wordchars = []
 
-class dataset:
-    def __init__(self):
+class dataset: 
+    def __init__(self): 
         self.sentences = []
         self.name = ""
         self.total_word_count = 0
@@ -65,12 +65,12 @@ class log_linear_model:
 
         self.train.open_file("train.conll")
         #self.train.open_file("./bigdata/train.conll")
-        self.train.read_data(100)
+        self.train.read_data(-1)
         self.train.close_file()
 
         self.dev.open_file("dev.conll")
         #self.dev.open_file("./bigdata/dev.conll")
-        self.dev.read_data(100)
+        self.dev.read_data(-1)
         self.dev.close_file()
     
     def create_feature(self, sentence, pos):
@@ -201,16 +201,16 @@ class log_linear_model:
     def update_weight(self, eta, update_times):
         c = 0.01
         for i in range(self.feature_space_length):
-            #self.w[i] = (1 - eta * c) * self.w[i] + eta * c * self.g[i]
+            self.w[i] = (1 - eta * c) * self.w[i] + eta * self.g[i]
             #self.w[i] += eta * self.g[i]
-            self.w[i] = (1 - eta) * self.w[i] + self.g[i]
+            #self.w[i] = (1 - eta) * self.w[i] + self.g[i]
 
     def online_training(self):
         max_train_precision = 0.0
         max_dev_precision = 0.0
-        B = 100
+        B = 50
         b = 0
-        eta = 0.001
+        eta = 0.01
         self.w_all_eta.append(eta)
         update_times = 0
         print("eta is " + str(eta))
@@ -224,7 +224,7 @@ class log_linear_model:
                         update_times += 1
                         self.update_weight(eta, update_times)
                         b = 0
-                        eta = max(eta * 0.999, 0.00001)
+                        #eta = max(eta * 0.999, 0.00001)
                         self.w_all_eta.append(eta)
                         self.g = [0] * self.feature_space_length
                         self.g_update_id.clear()
@@ -232,7 +232,7 @@ class log_linear_model:
                 update_times += 1
             self.update_weight(eta, update_times)
             b = 0
-            eta = max(eta * 0.999, 0.00001)
+            #eta = max(eta * 0.999, 0.00001)
             self.w_all_eta.append(eta)
             self.g = [0] * self.feature_space_length
             self.g_update_id.clear()

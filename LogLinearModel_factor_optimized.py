@@ -63,11 +63,13 @@ class log_linear_model:
         self.train = dataset()
         self.dev = dataset()
 
-        self.train.open_file("./bigdata/train.conll")
+        #self.train.open_file("./bigdata/train.conll")
+        self.train.open_file("train.conll")
         self.train.read_data(-1)
         self.train.close_file()
 
-        self.dev.open_file("./bigdata/dev.conll")
+        #self.dev.open_file("./bigdata/dev.conll")
+        self.dev.open_file("dev.conll")
         self.dev.read_data(-1)
         self.dev.close_file()
     
@@ -202,7 +204,7 @@ class log_linear_model:
     def update_weight_with_update_times(self, index, update_times):
         last_update_times = self.w_update_times[index]
         for eta_id in range(last_update_times, update_times):
-            self.w[index] = (1 - self.w_all_eta[eta_id]) * self.w[index]
+            self.w[index] = (1 - 0.01*self.w_all_eta[eta_id]) * self.w[index]
         self.w_update_times[index] = update_times
 
     def update_weight(self, eta, update_times):
@@ -218,12 +220,12 @@ class log_linear_model:
         for i in range(self.feature_space_length):
             self.update_weight_with_update_times(i, update_times)
 
-    def online_training(self):
+    def sgd_online_training(self):
         max_train_precision = 0.0
         max_dev_precision = 0.0
-        B = 20
+        B = 50
         b = 0
-        eta = 0.001
+        eta = 0.1
         self.w_all_eta.append(eta)
         update_times = 0
         print("eta is " + str(eta))
@@ -308,6 +310,6 @@ if __name__ == '__main__':
     starttime = datetime.datetime.now()
     llm = log_linear_model()
     llm.create_feature_space()
-    llm.online_training()
+    llm.sgd_online_training()
     endtime = datetime.datetime.now()
     print("executing time is "+str((endtime-starttime).seconds)+" s")
