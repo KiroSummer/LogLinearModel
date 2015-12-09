@@ -13,7 +13,6 @@ class dataset:
     def __init__(self):
         self.sentences = []
         self.name = ""
-        self.total_word_count = 0
     
     def open_file(self, inputfile):
         self.inputfile = open(inputfile, mode = 'r')
@@ -42,9 +41,8 @@ class dataset:
             sen.tag.append(str_tag)
             sen.wordchars.append(list_wordchars)
             wordCount += 1
-        self.total_word_count = wordCount
         print(self.name + ".conll contains " + str(len(self.sentences)) + " sentences")
-        print(self.name + ".conll contains " + str(self.total_word_count) + " words")
+        print(self.name + ".conll contains " + str(wordCount) + " words")
 
 class log_linear_model:
     def __init__(self):
@@ -78,14 +76,14 @@ class log_linear_model:
         wi = sentence.word[pos]
         pos_word_len = len(sentence.word[pos])
         if(pos == 0):
-            wi_left_word = "START"
-            wi_left_word_last_c = "T"
+            wi_left_word = "##"
+            wi_left_word_last_c = "##"
         else:
             wi_left_word = sentence.word[pos-1]
             wi_left_word_last_c = sentence.wordchars[pos-1][len(sentence.word[pos-1])-1]
         if(pos == word_count-1):
-            wi_right_word = "END"
-            wi_right_word_first_c = "E"
+            wi_right_word = "$$"
+            wi_right_word_first_c = "$$"
         else:
             wi_right_word = sentence.word[pos+1]
             wi_right_word_first_c = sentence.wordchars[pos+1][0]
